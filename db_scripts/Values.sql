@@ -1,0 +1,70 @@
+-- Insert Teacher 1 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (101, 'john.doe', 'password123', 'John Doe', 'Teacher');
+
+-- Insert Teacher 2 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (102, 'jane.smith', 'password123', 'Jane Smith', 'Teacher');
+
+-- Insert Teacher 3 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (103, 'emily.davis', 'password123', 'Emily Davis', 'Teacher');
+
+
+
+
+-- Insert Student 1 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (201, 'alice.johnson', 'password123', 'Alice Johnson', 'Student');
+
+-- Insert Student 2 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (202, 'bob.williams', 'password123', 'Bob Williams', 'Student');
+
+-- Insert Student 3 into the 'users' table
+INSERT INTO users (id, username, password, name, accountType)
+VALUES (203, 'charlie.brown', 'password123', 'Charlie Brown', 'Student');
+
+
+
+
+-- Insert Assignment 1 for Teacher 1 (John Doe) into the 'assignments' table
+INSERT INTO assignments (description, teacher_id)
+VALUES ('Math Homework 1', (SELECT id FROM teachers WHERE username = 'john.doe'));
+
+-- Insert Assignment 2 for Teacher 2 (Jane Smith) into the 'assignments' table
+INSERT INTO assignments (description, teacher_id)
+VALUES ('Physics Project', (SELECT id FROM teachers WHERE username = 'jane.smith'));
+
+-- Insert Assignment 3 for Teacher 3 (Emily Davis) into the 'assignments' table
+INSERT INTO assignments (description, teacher_id)
+VALUES ('History Essay', (SELECT id FROM teachers WHERE username = 'emily.davis'));
+
+
+
+
+-- Assign Student 1 (Alice Johnson) to Assignment 1 (Math Homework 1)
+INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
+VALUES 
+    ((SELECT id FROM students WHERE username = 'alice.johnson'), 
+    (SELECT id FROM assignments WHERE description = 'Math Homework 1'), 
+    NULL,  -- No grade yet
+    NULL);  -- No submission yet
+
+-- Assign Student 2 (Bob Williams) to Assignment 2 (Physics Project)
+INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
+VALUES 
+    ((SELECT id FROM students WHERE username = 'bob.williams'), 
+    (SELECT id FROM assignments WHERE description = 'Physics Project'), 
+    NULL,  -- No grade yet
+    NULL);  -- No submission yet
+
+-- Assign Student 3 (Charlie Brown) to Assignment 3 (History Essay)
+INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
+VALUES 
+    ((SELECT id FROM students WHERE username = 'bob.williams'), 
+    (SELECT id FROM assignments WHERE description = 'History Essay'), 
+    NULL,  -- No grade yet
+    NULL);  -- No submission yet
+
+
