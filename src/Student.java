@@ -48,7 +48,7 @@ class Student extends User {
         return choice;
     }
     public void ViewAllAvailableAssignments() {
-        String sql = "SELECT id, description FROM assignments";
+        String sql = "SELECT id, name, description FROM assignments";
 
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -57,8 +57,10 @@ class Student extends User {
             System.out.println("Available Assignments:");
             while (rs.next()) {
                 int homeworkID = rs.getInt("id");
+                String taskName = rs.getString("name");
                 String description = rs.getString("description");
                 System.out.println("Homework ID: " + homeworkID);
+                System.out.println("Name: " + taskName);
                 System.out.println("Description: " + description);
                 System.out.println("--------------");
             }

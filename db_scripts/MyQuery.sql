@@ -30,6 +30,7 @@ CREATE TABLE students (
 
 CREATE TABLE assignments (
     id SERIAL PRIMARY KEY,  -- Automatically assigned ID (Primary Key)
+    name TEXT NOT NULL,
     description TEXT NOT NULL,
     teacher_id INT,  -- Foreign Key referencing teachers table
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL ON UPDATE CASCADE  -- Cascade on update, set null on delete

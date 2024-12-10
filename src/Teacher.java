@@ -49,10 +49,13 @@ class Teacher extends User {
         return choice;
     }
     public void addAssignment() {
-        String sql = "INSERT INTO assignments(description, teacher_id) VALUES (?, ?)";
+        String sql = "INSERT INTO assignments(name, description, teacher_id) VALUES (?, ?, ?)";
 
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            System.out.println("Enter the task name:");
+
+            String taskName = sc.nextLine();
 
             System.out.println("Enter the Description:");
 
@@ -61,8 +64,9 @@ class Teacher extends User {
 
 
             // Установка параметров запроса
-            pstmt.setString(1, desc);
-            pstmt.setInt(2, id);
+            pstmt.setString(1, taskName);
+            pstmt.setString(2, desc);
+            pstmt.setInt(3, id);
 
 
             // Выполнение запроса

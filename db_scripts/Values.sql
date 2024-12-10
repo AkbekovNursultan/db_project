@@ -29,16 +29,16 @@ VALUES (203, 'charlie.brown', 'password123', 'Charlie Brown', 'Student');
 
 
 -- Insert Assignment 1 for Teacher 1 (John Doe) into the 'assignments' table
-INSERT INTO assignments (description, teacher_id)
-VALUES ('Math Homework 1', (SELECT id FROM teachers WHERE username = 'john.doe'));
+INSERT INTO assignments (name, description, teacher_id)
+VALUES ('Math Homework 1', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'john.doe'));
 
 -- Insert Assignment 2 for Teacher 2 (Jane Smith) into the 'assignments' table
-INSERT INTO assignments (description, teacher_id)
-VALUES ('Physics Project', (SELECT id FROM teachers WHERE username = 'jane.smith'));
+INSERT INTO assignments (name, description, teacher_id)
+VALUES ('Physics Project', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'jane.smith'));
 
 -- Insert Assignment 3 for Teacher 3 (Emily Davis) into the 'assignments' table
-INSERT INTO assignments (description, teacher_id)
-VALUES ('History Essay', (SELECT id FROM teachers WHERE username = 'emily.davis'));
+INSERT INTO assignments (name, description, teacher_id)
+VALUES ('History Essay', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'emily.davis'));
 
 
 
@@ -47,7 +47,7 @@ VALUES ('History Essay', (SELECT id FROM teachers WHERE username = 'emily.davis'
 INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
 VALUES 
     ((SELECT id FROM students WHERE username = 'alice.johnson'), 
-    (SELECT id FROM assignments WHERE description = 'Math Homework 1'), 
+    (SELECT id FROM assignments WHERE name = 'Math Homework 1'), 
     NULL,  -- No grade yet
     NULL);  -- No submission yet
 
@@ -55,7 +55,7 @@ VALUES
 INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
 VALUES 
     ((SELECT id FROM students WHERE username = 'bob.williams'), 
-    (SELECT id FROM assignments WHERE description = 'Physics Project'), 
+    (SELECT id FROM assignments WHERE name = 'Physics Project'), 
     NULL,  -- No grade yet
     NULL);  -- No submission yet
 
@@ -63,7 +63,7 @@ VALUES
 INSERT INTO students_assignments (student_id, assignment_id, grade, submission)
 VALUES 
     ((SELECT id FROM students WHERE username = 'bob.williams'), 
-    (SELECT id FROM assignments WHERE description = 'History Essay'), 
+    (SELECT id FROM assignments WHERE name = 'History Essay'), 
     NULL,  -- No grade yet
     NULL);  -- No submission yet
 
