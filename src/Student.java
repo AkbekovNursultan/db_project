@@ -29,13 +29,13 @@ class Student extends User {
             choice=sc.nextInt();
             switch (choice) {
                 case 1:
-                    ViewAllAvailableAssignments();
+                    showAllAvailableAssignments();
                     break;
                 case 2:
-                    ViewGrades();
+                    showGrades();
                     break;
                 case 3:
-                    SubmitAssignment();
+                    submitAssignment();
                     break;
                 case 4:
                     System.out.println("You have logged out.");
@@ -47,7 +47,9 @@ class Student extends User {
         }while (choice < 1 || choice > 4);
         return choice;
     }
-    public void ViewAllAvailableAssignments() {
+    public void showAllAssignments() {}
+    public void showAssignmentDetails() {}
+    public void showAllAvailableAssignments() {
         String sql = "SELECT id, name, description FROM assignments";
 
         try (Connection conn = MyJDBC.getConnection();
@@ -72,10 +74,16 @@ class Student extends User {
         }
 
     }
-    public void ViewGrades() {
+    public void showGrades() {
 
     }
-    public void SubmitAssignment() {
+    public void submitAssignment() {
+
+    }
+    public void updateAssignment() {
+
+    }
+    public void showMyProfile() {
 
     }
 }

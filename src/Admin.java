@@ -36,10 +36,10 @@ class Admin extends User {
                     removeUser();
                     break;
                 case 3:
-                    addCourses();
+
                     break;
                 case 4:
-                    removeCourses();
+
                     break;
                 case 5:
                     System.out.println("You have exited the system.");
@@ -51,7 +51,15 @@ class Admin extends User {
         } while (choice < 1 || choice > 5);
         return choice;
     }
+    public void showAllUsers() {
 
+    }
+    public void showAllStudents() {
+
+    }
+    public void showAllTeachers() {
+
+    }
     public void addUser() {
 
 
@@ -85,7 +93,6 @@ class Admin extends User {
         }
 
     }
-
     public void removeUser() {
 
         String sql = "DELETE FROM users WHERE id = ?";
@@ -110,60 +117,11 @@ class Admin extends User {
             System.out.println("Error removing student: " + e.getMessage());
         }
     }
-
-    public void addCourses() {
-        String sql = "INSERT INTO courses(Coursename, Coursedescription) VALUES (?, ?)";
-
-        try (Connection conn = MyJDBC.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            System.out.println("Enter the name of the Course:");
-            String name = sc.next();
-            sc.nextLine();
-
-
-
-            System.out.println("Enter the description of the Course:");
-            String description = sc.nextLine();
-
-            // Установка параметров запроса
-            pstmt.setString(1, name );
-            pstmt.setString(2, description);
-
-
-
-
-            // Выполнение запроса
-            pstmt.executeUpdate();
-            System.out.println("You successfully added Course.");
-        } catch (SQLException e) {
-            System.out.println("You failed to add the Course : " + e.getMessage());
-        }
+    public void showAllAssignments() {
 
     }
 
-    public void removeCourses() {
-        String sql = "DELETE FROM courses WHERE Coursename = ?";
-
-        try (Connection conn = MyJDBC.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            System.out.println("Enter the Coursename of the participant to remove:");
-
-            String Coursename = sc.next();
-
-            // Установка параметра запроса
-            pstmt.setString(1, Coursename);
-
-            // Выполнение запроса
-            int rowsAffected = pstmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Course successfully removed.");
-            } else {
-                System.out.println("Course with the specified name not found.");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error removing Course: " + e.getMessage());
-        }
+    public void deleteAssignment() {
 
     }
 }

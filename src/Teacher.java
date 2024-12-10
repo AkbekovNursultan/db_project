@@ -77,7 +77,26 @@ class Teacher extends User {
         }
 
     }
+    public void deleteAssignment() {
+
+    }
+    public void updateAssignment() {
+
+    }
+    public void showAssignmentDetails() {
+
+    }
     public void gradeStudent() {
 
     }
+    public void showMyTasks() {
+
+    }
+    public void showMyTasksWithNoSubmissions() {
+
+    }
+    public void showSubmissions() {
+
+    }
+
 }
