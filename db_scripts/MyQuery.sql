@@ -29,7 +29,7 @@ CREATE TABLE students (
 
 
 CREATE TABLE assignments (
-    id INT PRIMARY KEY,  -- Automatically assigned ID (Primary Key)
+    id SERIAL PRIMARY KEY,  -- Automatically assigned ID (Primary Key)
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     teacher_id INT,  -- Foreign Key referencing teachers table
