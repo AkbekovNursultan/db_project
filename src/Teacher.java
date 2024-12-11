@@ -109,18 +109,24 @@ class Teacher extends User {
             System.out.println("Failed to update grade: " + e.getMessage());
         }
     }
-
     public void showMyTasks() {
-        String sql = "SELECT * FROM assignments WHERE teacher_id = ?";
+        String sql = "SELECT id, name, description FROM assignments WHERE teacher_id = ?";
 
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, id);
+            pstmt.setInt(1, id); // Bind the teacher's ID to the query
             try (ResultSet rs = pstmt.executeQuery()) {
                 System.out.println("My Assignments:");
                 while (rs.next()) {
-                    System.out.println("ID: " + rs.getInt("id") + ", Name: " + rs.getString("name") + ", Description: " + rs.getString("description"));
+                    int assignmentId = rs.getInt("id");
+                    String assignmentName = rs.getString("name");
+                    String assignmentDescription = rs.getString("description");
+
+                    System.out.println("ID: " + assignmentId);
+                    System.out.println("Name: " + assignmentName);
+                    System.out.println("Description: " + assignmentDescription);
+                    System.out.println("--------------");
                 }
             }
         } catch (SQLException e) {
