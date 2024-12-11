@@ -5,6 +5,7 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws SQLException {
+        // Viewer viewer = new Viewer();
         Scanner scanner = new Scanner(System.in);
         login(scanner);
 
@@ -15,12 +16,15 @@ public class Main {
         Connection connection = null;
         PreparedStatement stmt = null;
         boolean loggedIn = false;
-        do {
+        while(true){
             try {
                 connection = MyJDBC.getConnection();
-                System.out.println("Enter your username");
+                System.out.println("Enter your username: \n(Leave blank to exit the program)");
                 String username = scanner.nextLine();
-                System.out.println("Enter your password");
+                if(username.isBlank()){
+                    break;
+                }
+                System.out.println("Enter your password: ");
                 String password = scanner.nextLine();
 
                 String query = "SELECT id, username , password , accountType FROM users WHERE username =? AND password =?";
@@ -53,7 +57,6 @@ public class Main {
                             System.out.println("Invalid account type");
                             break;
                     }
-                    loggedIn = true;
                 } else {
                     System.out.println("Invalid username or password");
                 }
@@ -70,7 +73,7 @@ public class Main {
                     System.out.println("Connection error" + ex.getMessage());
                 }
             }
-        }while(!loggedIn);
+        }
     }
 
 }
