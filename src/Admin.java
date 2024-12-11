@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 class Admin extends User {
@@ -15,8 +12,8 @@ class Admin extends User {
         int choice;
         do {
             System.out.println("Welcome to School System Administrator");
-            System.out.println("1-Add students");
-            System.out.println("2-Remove students");
+            System.out.println("1-Add user");
+            System.out.println("2-Remove user");
             System.out.println("3-Add courses");
             System.out.println("4-Remove courses");
             System.out.println("5-Exit");
@@ -29,6 +26,9 @@ class Admin extends User {
         do {
             choice = sc.nextInt();
             switch (choice) {
+                case 0:
+                    showAllUsers();
+                    break;
                 case 1:
                     addUser();
                     break;
@@ -48,11 +48,37 @@ class Admin extends User {
                     System.out.println("Invalid option");
                     break;
             }
-        } while (choice < 1 || choice > 5);
+        } while (choice < -1 || choice > 5);
         return choice;
     }
     public void showAllUsers() {
+        String sql = "SELECT * from users";
 
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            System.out.println("\n\n\n\n\n\n\n\nAll users:");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String accountType = rs.getString("accountType");
+                if(accountType.equals("Admin")){
+                    continue;
+                }
+                String username = rs.getString("username");
+                System.out.println("ID: " + id);
+                System.out.println("Username: " + username);
+                System.out.println("Name: " + name);
+                System.out.println("Role: " + accountType);
+                System.out.println("--------------");
+            }
+            System.out.println();
+            System.out.println();
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving assignments: " + e.getMessage());
+        }
     }
     public void showAllStudents() {
 
@@ -67,6 +93,9 @@ class Admin extends User {
 
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            System.out.println("Enter the ID: ");
+            int id = sc.nextInt();
+            sc.nextLine();
             System.out.println("Enter the username:");
             String username = sc.next();
 
@@ -109,9 +138,9 @@ class Admin extends User {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Student successfully removed.");
+                System.out.println("User successfully removed.");
             } else {
-                System.out.println("Student with the specified ID not found.");
+                System.out.println("User with the specified ID not found.");
             }
         } catch (SQLException e) {
             System.out.println("Error removing student: " + e.getMessage());

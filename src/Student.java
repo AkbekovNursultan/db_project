@@ -47,7 +47,9 @@ class Student extends User {
         }while (choice < 1 || choice > 4);
         return choice;
     }
-    public void showAllAssignments() {}
+    public void showAllAssignments() {
+
+    }
     public void showAssignmentDetails() {}
     public void showAllAvailableAssignments() {
         String sql = "SELECT id, name, description FROM assignments";
@@ -76,9 +78,52 @@ class Student extends User {
     }
     public void showGrades() {
 
+        String sql = "SELECT s.assignment_id, a.description, s.grade FROM students_assignments s " +
+                "JOIN assignments a ON s.assignment_id = a.id " +
+                "WHERE s.student_id = ?";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                System.out.println("Your Grades:");
+                while (rs.next()) {
+                    int assignmentId = rs.getInt("assignment_id");
+                    String description = rs.getString("description");
+                    int grade = rs.getInt("grade");
+                    System.out.println("Assignment ID: " + assignmentId);
+                    System.out.println("Description: " + description);
+                    System.out.println("Grade: " + (grade == 0 ? "Not graded yet" : grade));
+                    System.out.println("--------------");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving grades: " + e.getMessage());
+        }
     }
     public void submitAssignment() {
+        System.out.println("Enter the assignment ID:");
+        int assignmentId = sc.nextInt();
+        sc.nextLine(); // Consume newline
 
+        System.out.println("Enter your submission (text):");
+        String submission = sc.nextLine();
+
+        String sql = "INSERT INTO students_assignments(student_id, assignment_id, submission) VALUES (?, ?, ?)";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            pstmt.setInt(2, assignmentId);
+            pstmt.setString(3, submission);
+
+            pstmt.executeUpdate();
+            System.out.println("Assignment submitted successfully.");
+        } catch (SQLException e) {
+            System.out.println("Failed to submit assignment: " + e.getMessage());
+        }
     }
     public void updateAssignment() {
 

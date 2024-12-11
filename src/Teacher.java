@@ -87,7 +87,36 @@ class Teacher extends User {
 
     }
     public void gradeStudent() {
+        System.out.println("Enter the assignment ID:");
+        int assignmentId = sc.nextInt();
+        sc.nextLine(); // Consume newline
 
+        System.out.println("Enter the student ID:");
+        int studentId = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        System.out.println("Enter the grade:");
+        int grade = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        String sql = "UPDATE students_assignments SET grade = ? WHERE assignment_id = ? AND student_id = ?";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, grade);
+            pstmt.setInt(2, assignmentId);
+            pstmt.setInt(3, studentId);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Grade updated successfully.");
+            } else {
+                System.out.println("No matching submission found to update.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to update grade: " + e.getMessage());
+        }
     }
     public void showMyTasks() {
 
