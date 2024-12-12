@@ -25,18 +25,19 @@ public class Model {
             stmt = connection.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, new String(password));
+            System.out.println(username + " " + new String(password));
 
             rs = stmt.executeQuery();
 
             if (rs.next()) {
                 String accountType = rs.getString("accountType");
                 userId = rs.getInt("id");
-                System.out.println("Login successfully");
+                System.out.println("Login successfully: " + accountType + "\nID: " + userId);
                 switch (accountType) {
                     case "Admin":
                         System.out.println("Welcome Admin");
                         //Admin admin = new Admin(id, username, password);
-                        //admin.displayMenu();
+                        viewer.showAdminMenu();
 
                         break;
                     case "Teacher":
@@ -47,7 +48,7 @@ public class Model {
                     case "Student":
                         System.out.println("Welcome Student");
                         //Student student = new Student(id, username, password);
-                        //student.displayMenu();
+                        viewer.showStudentMenu();
                         break;
                     default:
                         System.out.println("Invalid account type");
@@ -71,10 +72,9 @@ public class Model {
     }
 
     public void handleSignIn() {
-        if(username.isEmpty()){
-            username = viewer.getUsername();
-            password = viewer.getPassword();
-        }
+        username = viewer.getUsername();
+        password = viewer.getPassword();
+
         if (username.isEmpty() || password.isEmpty()) {
             viewer.showLoginError();
         }
@@ -83,10 +83,11 @@ public class Model {
     }
 
     public void logout() {
+        username = "";
+        password = "";
         viewer.showSignIn();
     }
 
-    // Add an assignment (only available to teachers)
     // Add an assignment (only available to teachers)
     public void addAssignment(String taskName, String description) {
         String sql = "INSERT INTO assignments (name, description, teacher_id) VALUES (?, ?, ?)";
@@ -222,4 +223,104 @@ public class Model {
         }
     }
 
+    public void showMyProfile() {
+        String sql = "SELECT * FROM students WHERE id = ?";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            StringBuilder output = new StringBuilder();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    output.append("---------------")
+                            .append("\nID: ").append(rs.getInt("id"))
+                            .append("\nName: ").append(rs.getString("name"))
+                            .append("\nUsername: ").append(rs.getString("username"))
+                            .append("\n---------------\n");
+
+                }
+            }
+            viewer.displayOutput(output.toString());
+        } catch (SQLException e) {
+            System.out.println("Error retrieving profile: " + e.getMessage());
+            viewer.showStudentMenu();
+        }
+    }
+    public void showAllAssignments() {
+        String sql = "SELECT * FROM assignments";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            StringBuilder output = new StringBuilder("My Assignments:\n");
+            while (rs.next()) {
+                output.append("\nID: ").append(rs.getInt("id"))
+                        .append("\nName: ").append(rs.getString("name"))
+                        .append("\nDescription: ").append(rs.getString("description"))
+                        .append("\n---------------\n");
+            }
+            System.out.println(output.toString());
+            viewer.displayOutput(output.toString());
+
+        } catch (SQLException e) {
+            viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
+            viewer.showStudentMenu();
+        }
+    }
+    public void showAllAvailableAssignments(){
+        String sql = "SELECT a.id, a.name, a.description FROM assignments a " +
+                "LEFT JOIN students_assignments sa ON a.id = sa.assignment_id AND sa.student_id = ? " +
+                "WHERE sa.assignment_id IS NULL";  // Only show assignments that have not been submitted
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);  // Show tasks for the teacher based on userId
+            ResultSet rs = pstmt.executeQuery();
+
+            StringBuilder output = new StringBuilder("My Assignments:\n");
+            while (rs.next()) {
+                output.append("\nID: ").append(rs.getInt("id"))
+                        .append("\nName: ").append(rs.getString("name"))
+                        .append("\nDescription: ").append(rs.getString("description"))
+                        .append("\n---------------\n");
+            }
+            System.out.println(output.toString());
+            viewer.displayOutput(output.toString());
+
+        } catch (SQLException e) {
+            viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
+            viewer.showTeacherMenu();
+        }
+    }
+    public void showGrades(){
+        String sql =
+                "SELECT a.id AS assignment_id, a.name AS assignment_name, a.description, " +
+                "s.submission, s.grade FROM assignments a " +
+                "JOIN students_assignments s ON a.id = s.assignment_id " +
+                "WHERE s.student_id = ?";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            StringBuilder output = new StringBuilder();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    output.append("---------------")
+                            .append("\nID: ").append(rs.getInt("id"))
+                            .append("\nName: ").append(rs.getString("name"))
+                            .append("\nGrade: ").append(rs.getString("grade"))
+                            .append("\n---------------\n");
+
+                }
+            }
+            viewer.displayOutput(output.toString());
+        } catch (SQLException e) {
+            System.out.println("Error retrieving grades: " + e.getMessage());
+            viewer.showStudentMenu();
+        }
+    }
+    public void showMySubmissions(){}
 }
