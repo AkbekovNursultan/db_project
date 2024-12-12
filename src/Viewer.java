@@ -74,6 +74,57 @@ public class Viewer {
         frame.setVisible(true);
     }
 
+    public void showAdminMenu() {
+        mainPanel.removeAll();
+
+        JLabel welcomeLabel = new JLabel("Welcome Sir!");
+        welcomeLabel.setBounds(150, 50, 350, 30);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+
+        // Buttons for Teacher's menu options
+        JButton showUsersButton = new JButton("Show users");
+        JButton showStudentsButton = new JButton("Show students");
+        JButton showTeachersButton = new JButton("Show teachers");
+        JButton addUserButton = new JButton("Add user");
+        JButton deleteUserButton = new JButton("Delete user");
+        JButton logoutButton = new JButton("Log Out");
+
+        showUsersButton.setBounds(150, 100, 200, 30);
+        showStudentsButton.setBounds(150, 140, 200, 30);
+        showTeachersButton.setBounds(150, 180, 200, 30);
+        addUserButton.setBounds(150, 220, 200, 30);
+        deleteUserButton.setBounds(150, 260, 200, 30);
+        logoutButton.setBounds(150, 300, 200, 30);
+
+        // Adding buttons to the panel
+        mainPanel.add(welcomeLabel);
+        mainPanel.add(showUsersButton);
+        mainPanel.add(showStudentsButton);
+        mainPanel.add(showTeachersButton);
+        mainPanel.add(addUserButton);
+        mainPanel.add(deleteUserButton);
+        mainPanel.add(logoutButton);
+
+        // Button listeners
+        showUsersButton.addActionListener(controller);
+        showStudentsButton.addActionListener(controller);
+        showTeachersButton.addActionListener(controller);
+        addUserButton.addActionListener(controller);
+        deleteUserButton.addActionListener(controller);
+        logoutButton.addActionListener(controller);
+
+        showUsersButton.setActionCommand("showUsers");
+        showStudentsButton.setActionCommand("showStudents");
+        showTeachersButton.setActionCommand("showTeachers");
+        addUserButton.setActionCommand("addUser");
+        deleteUserButton.setActionCommand("deleteUser");
+        logoutButton.setActionCommand("logout");
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        showFrame();
+    }
+
     public void showTeacherMenu() {
         mainPanel.removeAll();
 
@@ -211,52 +262,58 @@ public class Viewer {
         mainPanel.repaint();
         showFrame();
     }
-    public void showTasksWithNoSubmissions() {
+
+    public void showStudentMenu(){
         mainPanel.removeAll();
 
-        JButton showTasksButton = new JButton("Show Tasks with No Submissions");
-        showTasksButton.setBounds(150, 100, 200, 30);
-        showTasksButton.addActionListener(e -> {
-            // Call the Model's showMyTasksWithNoSubmissions method
-            model.showMyTasksWithNoSubmissions();
-        });
+        JLabel welcomeLabel = new JLabel("Welcome Student!");
+        welcomeLabel.setBounds(150, 50, 350, 30);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
-        mainPanel.add(showTasksButton);
+        JButton showAllAssignmentsButton = new JButton("All assignments");
+        JButton showAvailableAssignmentsButton = new JButton("Available assignments");
+        JButton showGradesButton = new JButton("Grades list");
+        JButton showMyProfileButton = new JButton("My profile");
+        JButton showMySubmissionsButton = new JButton("My submissions");
+        JButton logoutButton = new JButton("Log Out");
+
+        showAllAssignmentsButton.setBounds(150, 100, 200, 30);
+        showMyProfileButton.setBounds(150, 140, 200, 30);
+        showGradesButton.setBounds(150, 180, 200, 30);
+        showAvailableAssignmentsButton.setBounds(150, 220, 200, 30);
+        showMySubmissionsButton.setBounds(150, 260, 200, 30);
+        logoutButton.setBounds(150, 300, 200, 30);
+
+        // Adding buttons to the panel
+        mainPanel.add(welcomeLabel);
+        mainPanel.add(showAllAssignmentsButton);
+        mainPanel.add(showMyProfileButton);
+        mainPanel.add(showGradesButton);
+        mainPanel.add(showAvailableAssignmentsButton);
+        mainPanel.add(showMySubmissionsButton);
+        mainPanel.add(logoutButton);
+
+        // Button listeners
+        showAllAssignmentsButton.addActionListener(controller);
+        showGradesButton.addActionListener(controller);
+        showMyProfileButton.addActionListener(controller);
+        showAvailableAssignmentsButton.addActionListener(controller);
+        showMySubmissionsButton.addActionListener(controller);
+        logoutButton.addActionListener(controller);
+
+        showAllAssignmentsButton.setActionCommand("showAllAssignments");
+        showMyProfileButton.setActionCommand("showStudentProfile");
+        showGradesButton.setActionCommand("showStudentGrades");
+        showAvailableAssignmentsButton.setActionCommand("showAssignmentsStudent");
+        showMySubmissionsButton.setActionCommand("showSubmissionsStudent");
+        logoutButton.setActionCommand("logout");
 
         mainPanel.revalidate();
         mainPanel.repaint();
         showFrame();
     }
-    public void showSubmissionsMenu() {
-        mainPanel.removeAll();
-
-        JLabel assignmentLabel = new JLabel("Assignment ID:");
-        assignmentLabel.setBounds(150, 50, 100, 30);
-        JTextField assignmentField = new JTextField();
-        assignmentField.setBounds(150, 80, 200, 30);
-
-        JButton showSubmissionsButton = new JButton("Show Submissions");
-        showSubmissionsButton.setBounds(150, 120, 200, 30);
-        showSubmissionsButton.addActionListener(e -> {
-            // Retrieve the assignmentId from the input field
-            int assignmentId = Integer.parseInt(assignmentField.getText());
-
-            // Call the Model's showSubmissions method
-            model.showSubmissions();
-        });
-
-        mainPanel.add(assignmentLabel);
-        mainPanel.add(assignmentField);
-        mainPanel.add(showSubmissionsButton);
-        mainPanel.add(goBack);
-
-        mainPanel.revalidate();
-        mainPanel.repaint();
-        showFrame();
-    }
-
-
-
+    public void submitAssignment(){}
+    public void updateAssignment(){}
 
     public void showLoginError() {
         JOptionPane.showMessageDialog(null, "Username or Password is incorrect.", "Error", JOptionPane.ERROR_MESSAGE);
