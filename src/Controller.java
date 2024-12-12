@@ -32,9 +32,18 @@ public class Controller implements ActionListener{
             model.showSubmissions();
         } else if (command.equals("backToMenu")) {
             model.handleSignIn();
+        } else if (command.equals("showStudentProfile")) {
+            model.showMyProfile();
+        } else if (command.equals("showStudentGrades")) {
+            model.showGrades();
+        } else if (command.equals("showAllAssignments")) {
+            model.showAllAssignments();
+        } else if (command.equals("showAssignmentsStudent")) {
+            model.showAllAvailableAssignments();
+        } else if (command.equals("showSubmissionsStudent")) {
+            model.showMySubmissions();
         }
 
     }
-
 
 }
