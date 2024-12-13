@@ -105,7 +105,6 @@ public class Model {
 
             pstmt.executeUpdate();
             System.out.println("Assignment added successfully!");
-            viewer.displayOutput("Assignment added successfully!");
             viewer.showTeacherMenu();
         } catch (SQLException e) {
             System.out.println("nah");
@@ -167,7 +166,7 @@ public class Model {
     // Show tasks with no submissions (for teachers)
     public void showMyTasksWithNoSubmissions() {
         String sql = """
-            SELECT a.id, a.description
+            SELECT a.id, a.name, a.description
             FROM assignments a
             LEFT JOIN students_assignments sa ON a.id = sa.assignment_id
             WHERE sa.assignment_id IS NULL AND a.teacher_id = ?
@@ -180,15 +179,15 @@ public class Model {
             try (ResultSet rs = pstmt.executeQuery()) {
                 StringBuilder output = new StringBuilder("Assignments with No Submissions:\n");
                 while (rs.next()) {
-                    output.append("ID: ").append(rs.getInt("id"))
-                            .append(", Description: ").append(rs.getString("description"))
-                            .append("\n");
+                    output.append("\nID: ").append(rs.getInt("id"))
+                            .append("\nTask name: ").append("name")
+                            .append("\nDescription: ").append(rs.getString("description"))
+                            .append("\n--------------");
                 }
                 viewer.displayOutput(output.toString());
-                viewer.showTeacherMenu();
             }
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve tasks with no submissions: " + e.getMessage());
+            System.out.println(e);
             viewer.showTeacherMenu();
         }
     }
@@ -289,6 +288,7 @@ public class Model {
             }
             System.out.println(output.toString());
             viewer.displayOutput(output.toString());
+            viewer.addSubmitAssignmentButton();
 
         } catch (SQLException e) {
             viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
@@ -297,7 +297,7 @@ public class Model {
     }
     public void showGrades(){
         String sql =
-                "SELECT a.id AS assignment_id, a.name AS assignment_name, a.description, " +
+                "SELECT a.id, a.name, a.description, " +
                 "s.submission, s.grade FROM assignments a " +
                 "JOIN students_assignments s ON a.id = s.assignment_id " +
                 "WHERE s.student_id = ?";
@@ -307,10 +307,10 @@ public class Model {
             pstmt.setInt(1, userId);
             StringBuilder output = new StringBuilder();
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     output.append("---------------")
                             .append("\nID: ").append(rs.getInt("id"))
-                            .append("\nName: ").append(rs.getString("name"))
+                            .append("\nAssignment name: ").append(rs.getString("name"))
                             .append("\nGrade: ").append(rs.getString("grade"))
                             .append("\n---------------\n");
 
@@ -322,5 +322,80 @@ public class Model {
             viewer.showStudentMenu();
         }
     }
-    public void showMySubmissions(){}
+    public void showMySubmissions(){
+        String sql = "SELECT sa.assignment_id, a.name, sa.submission, sa.grade " +
+                "FROM students_assignments sa JOIN assignments a ON sa.assignment_id = a.id  " +
+                "WHERE sa.student_id = ?";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            StringBuilder output = new StringBuilder();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    output.append("---------------")
+                            .append("\nID: ").append(rs.getInt("assignment_id"))
+                            .append("\nName: ").append(rs.getString("name"))
+                            .append("\nSubmission: ").append(rs.getString("submission"))
+                            .append("\nGrade: ").append(rs.getString("grade"))
+                            .append("\n---------------\n");
+
+                }
+            }
+            viewer.displayOutput(output.toString());
+        } catch (SQLException e) {
+            System.out.println("Error retrieving grades: " + e.getMessage());
+            viewer.showStudentMenu();
+        }
+    }
+    public void submitAssignment(int taskId, String submission) {
+        // First, try to update the existing submission.
+        String updateSql = "UPDATE students_assignments SET submission = ?, grade = 0 WHERE student_id = ? AND assignment_id = ?";
+        String insertSql = "INSERT INTO students_assignments (student_id, assignment_id, submission) VALUES (?, ?, ?)";
+
+        try (Connection conn = MyJDBC.getConnection()) {
+            // Check if a submission already exists
+            String checkSql = "SELECT COUNT(*) FROM students_assignments WHERE student_id = ? AND assignment_id = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setInt(1, userId);
+                checkStmt.setInt(2, taskId);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        // If the student already has a submission, update it
+                        try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                            pstmt.setString(1, submission);
+                            pstmt.setInt(2, userId);
+                            pstmt.setInt(3, taskId);
+                            int rowsUpdated = pstmt.executeUpdate();
+                            if (rowsUpdated > 0) {
+                                System.out.println("Submission updated.");
+                            } else {
+                                System.out.println("No matching task was found to update.");
+                            }
+                        }
+                    } else {
+                        // If no submission exists, insert a new one
+                        try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+                            pstmt.setInt(1, userId);
+                            pstmt.setInt(2, taskId);
+                            pstmt.setString(3, submission);
+                            int rowsInserted = pstmt.executeUpdate();
+                            if (rowsInserted > 0) {
+                                System.out.println("Submission added.");
+                            } else {
+                                System.out.println("Failed to add submission.");
+                            }
+                        }
+                    }
+                }
+            }
+
+            viewer.showStudentMenu();
+
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }

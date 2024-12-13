@@ -6,9 +6,6 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
         Viewer viewer = new Viewer();
-     //   Scanner scanner = new Scanner(System.in);
-     //   login(scanner);
-
     }
 
 }

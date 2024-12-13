@@ -15,6 +15,7 @@ public class Viewer {
     private JTextArea displayArea;  // Area for displaying output to the user
     private Controller controller;
     private Model model;
+    private JButton additionalButton;
 
     public Viewer() {
         controller = new Controller(this);
@@ -29,7 +30,7 @@ public class Viewer {
         goBack.addActionListener(controller);
         goBack.setActionCommand("backToMenu");
         displayArea = new JTextArea();
-        displayArea.setBounds(50, 50, 400, 500);
+        displayArea.setBounds(50, 50, frame.getWidth() - 50, frame.getHeight() - 50);
         displayArea.setEditable(false);  // Make it non-editable
         displayArea.setFont(new Font("Arial", Font.PLAIN, 14));
         scrollPane = new JScrollPane(displayArea);
@@ -282,7 +283,7 @@ public class Viewer {
         showGradesButton.setBounds(150, 180, 200, 30);
         showAvailableAssignmentsButton.setBounds(150, 220, 200, 30);
         showMySubmissionsButton.setBounds(150, 260, 200, 30);
-        logoutButton.setBounds(150, 300, 200, 30);
+        logoutButton.setBounds(150, 340, 200, 30);
 
         // Adding buttons to the panel
         mainPanel.add(welcomeLabel);
@@ -312,7 +313,42 @@ public class Viewer {
         mainPanel.repaint();
         showFrame();
     }
-    public void submitAssignment(){}
+    public void showSubmitAssignmentMenu(){
+        mainPanel.removeAll();
+
+        JLabel assignmentLabel = new JLabel("Assignment ID:");
+        assignmentLabel.setBounds(150, 50, 100, 30);
+        JTextField assignmentField = new JTextField();
+        assignmentField.setBounds(150, 80, 200, 30);
+
+        JLabel submissionLabel = new JLabel("Submission text:");
+        submissionLabel.setBounds(150, 120, 100, 30);
+        JTextField submissionField = new JTextField();
+        submissionField.setBounds(150, 150, 200, 30);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setBounds(150, 260, 200, 30);
+        submitButton.addActionListener(e -> {
+            // Retrieve the values from the input fields
+            int assignmentId = Integer.parseInt(assignmentField.getText());
+            String submission = submissionField.getText();
+
+            // Call the Model's gradeStudent method
+            model.submitAssignment(assignmentId, submission);
+        });
+
+        mainPanel.add(assignmentLabel);
+        mainPanel.add(assignmentField);
+        mainPanel.add(submissionLabel);
+        mainPanel.add(submissionField);
+        mainPanel.add(submissionLabel);
+        mainPanel.add(submitButton);
+        mainPanel.add(goBack);
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        showFrame();
+    }
     public void updateAssignment(){}
 
     public void showLoginError() {
@@ -329,6 +365,16 @@ public class Viewer {
         mainPanel.revalidate();
         mainPanel.repaint();
 
+    }
+
+    public void addSubmitAssignmentButton(){
+        additionalButton = new JButton("Add submission");
+        additionalButton.setBounds(100, 600, 150, 50);
+        additionalButton.addActionListener(controller);
+        additionalButton.setActionCommand("addSubmission");
+        mainPanel.add(additionalButton);
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 
     public String getUsername() {
