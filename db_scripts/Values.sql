@@ -1,47 +1,47 @@
 -- Insert Admin into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (1, 'admin', '123', 'Tamchy Kashiev', 'Admin');
+INSERT INTO users (username, password, name, accountType)
+VALUES ('admin', '123', 'Tamchy Kashiev', 'Admin');
 -- Insert Teacher 1 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (101, 'john.doe', '123', 'John Doe', 'Teacher');
+INSERT INTO users (username, password, name, accountType)
+VALUES ('john.doe', '123', 'John Doe', 'Teacher');
 
 -- Insert Teacher 2 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (102, 'jane.smith', '123', 'Jane Smith', 'Teacher');
+INSERT INTO users (username, password, name, accountType)
+VALUES ('jane.smith', '123', 'Jane Smith', 'Teacher');
 
 -- Insert Teacher 3 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (103, 'emily.davis', '123', 'Emily Davis', 'Teacher');
+INSERT INTO users ( username, password, name, accountType)
+VALUES ('emily.davis', '123', 'Emily Davis', 'Teacher');
 
 
 
 
 -- Insert Student 1 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (201, 'alice.johnson', '123', 'Alice Johnson', 'Student');
+INSERT INTO users ( username, password, name, accountType)
+VALUES ('alice.johnson', '123', 'Alice Johnson', 'Student');
 
 -- Insert Student 2 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (202, 'bob.williams', '123', 'Bob Williams', 'Student');
+INSERT INTO users ( username, password, name, accountType)
+VALUES ( 'bob.williams', '123', 'Bob Williams', 'Student');
 
 -- Insert Student 3 into the 'users' table
-INSERT INTO users (id, username, password, name, accountType)
-VALUES (203, 'charlie.brown', '123', 'Charlie Brown', 'Student');
+INSERT INTO users ( username, password, name, accountType)
+VALUES ( 'charlie.brown', '123', 'Charlie Brown', 'Student');
 
 
 
 
 -- Insert Assignment 1 for Teacher 1 (John Doe) into the 'assignments' table
 INSERT INTO assignments (name, description, teacher_id)
-VALUES ('Math Homework 1', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'john.doe'));
+VALUES ('Math Homework 1', '1 + 1 = ?' , (SELECT id FROM teachers WHERE username = 'john.doe'));
 
 -- Insert Assignment 2 for Teacher 2 (Jane Smith) into the 'assignments' table
 INSERT INTO assignments (name, description, teacher_id)
-VALUES ('Physics Project', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'jane.smith'));
+VALUES ('Physics Project', 'E = mc^?' , (SELECT id FROM teachers WHERE username = 'jane.smith'));
 
 -- Insert Assignment 3 for Teacher 3 (Emily Davis) into the 'assignments' table
 INSERT INTO assignments (name, description, teacher_id)
-VALUES ('History Essay', 'YEEEEAH BOOOI' , (SELECT id FROM teachers WHERE username = 'emily.davis'));
+VALUES ('History Essay', 'First President of Kyrgyzstan?' , (SELECT id FROM teachers WHERE username = 'emily.davis'));
 
 
 

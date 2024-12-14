@@ -17,37 +17,42 @@ public class Model {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        String errorMessage = null;
+
+        // Check if fields are empty before attempting to query the database
+        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            errorMessage = "Username and password must not be empty!";
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+            return; // Exit early if either field is empty
+        }
 
         try {
-            connection = MyJDBC.getConnection();  // Assuming MyJDBC is your DB connection utility
+            // Assuming MyJDBC is your DB connection utility
+            connection = MyJDBC.getConnection();
 
             String query = "SELECT id, username, password, accountType FROM users WHERE username = ? AND password = ?";
             stmt = connection.prepareStatement(query);
             stmt.setString(1, username);
-            stmt.setString(2, new String(password));
-            System.out.println(username + " " + new String(password));
+            stmt.setString(2, password);  // No need to create a new String object for password
+            System.out.println(username + " " + password);
 
             rs = stmt.executeQuery();
 
             if (rs.next()) {
                 String accountType = rs.getString("accountType");
                 userId = rs.getInt("id");
-                System.out.println("Login successfully: " + accountType + "\nID: " + userId);
+                System.out.println("Login successful: " + accountType + "\nID: " + userId);
                 switch (accountType) {
                     case "Admin":
                         System.out.println("Welcome Admin");
-                        //Admin admin = new Admin(id, username, password);
                         viewer.showAdminMenu();
-
                         break;
                     case "Teacher":
                         System.out.println("Welcome Teacher");
-                        //Teacher teacher = new Teacher(id, username, password);
                         viewer.showTeacherMenu();
                         break;
                     case "Student":
                         System.out.println("Welcome Student");
-                        //Student student = new Student(id, username, password);
                         viewer.showStudentMenu();
                         break;
                     default:
@@ -55,7 +60,11 @@ public class Model {
                         break;
                 }
             } else {
-                System.out.println("Invalid username or password");
+                errorMessage = "Invalid username or password";
+            }
+
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException e) {
@@ -74,10 +83,6 @@ public class Model {
     public void handleSignIn() {
         username = viewer.getUsername();
         password = viewer.getPassword();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            viewer.showLoginError();
-        }
         authenticate(username, password);
 
     }
@@ -104,11 +109,11 @@ public class Model {
             pstmt.setInt(3, userId);  // Using userId for teacher
 
             pstmt.executeUpdate();
-            System.out.println("Assignment added successfully!");
+            String error = ("Assignment added successfully!");
+            JOptionPane.showMessageDialog(null, error, "Done", JOptionPane.INFORMATION_MESSAGE);
             viewer.showTeacherMenu();
         } catch (SQLException e) {
-            System.out.println("nah");
-            viewer.displayOutput("Failed to add the assignment: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Failed to add the assignment", "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -134,7 +139,8 @@ public class Model {
             viewer.displayOutput(output.toString());
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve tasks: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -151,14 +157,18 @@ public class Model {
             pstmt.setInt(3, studentId);
 
             int rowsUpdated = pstmt.executeUpdate();
+            String msg;
             if (rowsUpdated > 0) {
-                viewer.displayOutput("Grade updated successfully.");
+                msg = ("Grade updated successfully.");
+                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                viewer.displayOutput("No matching submission found to update.");
+                msg =("No matching submission found to update.");
+                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
             }
             viewer.showTeacherMenu();
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to update grade: " + e.getMessage());
+            String errorMessage = ("Failed to update grade: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -187,7 +197,7 @@ public class Model {
                 viewer.displayOutput(output.toString());
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -217,7 +227,8 @@ public class Model {
                 viewer.displayOutput(output.toString());
             }
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve submissions: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve submissions: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -264,7 +275,8 @@ public class Model {
             viewer.displayOutput(output.toString());
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve tasks: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showStudentMenu();
         }
     }
@@ -291,7 +303,8 @@ public class Model {
             viewer.addSubmitAssignmentButton();
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve tasks: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve tasks: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
     }
@@ -318,7 +331,8 @@ public class Model {
             }
             viewer.displayOutput(output.toString());
         } catch (SQLException e) {
-            System.out.println("Error retrieving grades: " + e.getMessage());
+            String errorMessage = ("Error retrieving grades: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showStudentMenu();
         }
     }
@@ -344,7 +358,8 @@ public class Model {
             }
             viewer.displayOutput(output.toString());
         } catch (SQLException e) {
-            System.out.println("Error retrieving grades: " + e.getMessage());
+            String errorMessage = ("Error retrieving grades: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showStudentMenu();
         }
     }
@@ -367,10 +382,13 @@ public class Model {
                             pstmt.setInt(2, userId);
                             pstmt.setInt(3, taskId);
                             int rowsUpdated = pstmt.executeUpdate();
+                            String msg;
                             if (rowsUpdated > 0) {
-                                System.out.println("Submission updated.");
+                                msg = ("Submission updated.");
+                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
                             } else {
-                                System.out.println("No matching task was found to update.");
+                                msg = ("No matching task was found to update.");
+                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     } else {
@@ -380,10 +398,13 @@ public class Model {
                             pstmt.setInt(2, taskId);
                             pstmt.setString(3, submission);
                             int rowsInserted = pstmt.executeUpdate();
+                            String msg;
                             if (rowsInserted > 0) {
-                                System.out.println("Submission added.");
+                                msg = ("Submission added.");
+                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
                             } else {
-                                System.out.println("Failed to add submission.");
+                                msg = ("Failed to add submission.");
+                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }
@@ -393,7 +414,8 @@ public class Model {
             viewer.showStudentMenu();
 
         } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
+            String errorMessage = ("Database error: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -410,7 +432,8 @@ public class Model {
             pstmt.setString(4, accountType);
 
             pstmt.executeUpdate();
-            System.out.println("User is successfully updated.");
+            String msg = ("User is successfully updated.");
+            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
             viewer.showAdminMenu();
         } catch (SQLException e) {
             viewer.showAdminMenu();
@@ -423,7 +446,8 @@ public class Model {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-            System.out.println("User is successfully deleted.");
+            String msg = ("User is successfully deleted.");
+            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
             viewer.showAdminMenu();
         } catch (SQLException e) {
             viewer.showAdminMenu();
@@ -446,11 +470,11 @@ public class Model {
                         .append("\nAccount type: ").append(rs.getString("accountType"))
                         .append("\n---------------\n");
             }
-            System.out.println(output.toString());
             viewer.displayOutput(output.toString());
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve users: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showAdminMenu();
         }
     }
@@ -470,11 +494,11 @@ public class Model {
                         .append("\nAccount type: ").append(rs.getString("accountType"))
                         .append("\n---------------\n");
             }
-            System.out.println(output.toString());
             viewer.displayOutput(output.toString());
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve users: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showAdminMenu();
         }
     }
@@ -494,11 +518,11 @@ public class Model {
                         .append("\nAccount type: ").append(rs.getString("accountType"))
                         .append("\n---------------\n");
             }
-            System.out.println(output.toString());
             viewer.displayOutput(output.toString());
 
         } catch (SQLException e) {
-            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            String errorMessage = ("Failed to retrieve users: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showAdminMenu();
         }
     }
