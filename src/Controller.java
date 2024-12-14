@@ -44,6 +44,16 @@ public class Controller implements ActionListener{
             model.showMySubmissions();
         } else if (command.equals("addSubmission")) {
             viewer.showSubmitAssignmentMenu();
+        } else if (command.equals("addUser")) {
+            viewer.addUser();
+        } else if (command.equals("deleteUser")) {
+            viewer.deleteUser();
+        } else if (command.equals("showUsers")) {
+            model.showUsers();
+        } else if (command.equals("showTeachers")) {
+            model.showTeachers();
+        } else if (command.equals("showStudents")) {
+            model.showStudents();
         }
 
     }

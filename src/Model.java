@@ -398,4 +398,109 @@ public class Model {
         }
     }
 
+    public void addUser(String name, String username, String password, String accountType) {
+        String sql = "INSERT INTO users(username, password, name, accountType) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.setString(3, name);
+            pstmt.setString(4, accountType);
+
+            pstmt.executeUpdate();
+            System.out.println("User is successfully updated.");
+            viewer.showAdminMenu();
+        } catch (SQLException e) {
+            viewer.showAdminMenu();
+        }
+    }
+    public void deleteUser(int id){
+        String sql = "DELETE FROM users WHERE id = ?";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            System.out.println("User is successfully deleted.");
+            viewer.showAdminMenu();
+        } catch (SQLException e) {
+            viewer.showAdminMenu();
+        }
+    }
+
+    public void showUsers(){
+        String sql = "SELECT * FROM users ORDER BY id";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            StringBuilder output = new StringBuilder("All Users:\n");
+            while (rs.next()) {
+                output.append("\nID: ").append(rs.getInt("id"))
+                        .append("\nName: ").append(rs.getString("name"))
+                        .append("\nUsername: ").append(rs.getString("username"))
+                        .append("\nPassword: ").append(rs.getString("password"))
+                        .append("\nAccount type: ").append(rs.getString("accountType"))
+                        .append("\n---------------\n");
+            }
+            System.out.println(output.toString());
+            viewer.displayOutput(output.toString());
+
+        } catch (SQLException e) {
+            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            viewer.showAdminMenu();
+        }
+    }
+    public void showTeachers(){
+        String sql = "SELECT * FROM users WHERE accountType = 'Teacher' ORDER BY id";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            StringBuilder output = new StringBuilder("All Teachers:\n\n");
+            while (rs.next()) {
+                output.append("\nID: ").append(rs.getInt("id"))
+                        .append("\nName: ").append(rs.getString("name"))
+                        .append("\nUsername: ").append(rs.getString("username"))
+                        .append("\nPassword: ").append(rs.getString("password"))
+                        .append("\nAccount type: ").append(rs.getString("accountType"))
+                        .append("\n---------------\n");
+            }
+            System.out.println(output.toString());
+            viewer.displayOutput(output.toString());
+
+        } catch (SQLException e) {
+            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            viewer.showAdminMenu();
+        }
+    }
+    public void showStudents(){
+        String sql = "SELECT * FROM users WHERE accountType = 'Student' ORDER BY id";
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            StringBuilder output = new StringBuilder("All Students:\n\n");
+            while (rs.next()) {
+                output.append("\nID: ").append(rs.getInt("id"))
+                        .append("\nName: ").append(rs.getString("name"))
+                        .append("\nUsername: ").append(rs.getString("username"))
+                        .append("\nPassword: ").append(rs.getString("password"))
+                        .append("\nAccount type: ").append(rs.getString("accountType"))
+                        .append("\n---------------\n");
+            }
+            System.out.println(output.toString());
+            viewer.displayOutput(output.toString());
+
+        } catch (SQLException e) {
+            viewer.displayOutput("Failed to retrieve users: " + e.getMessage());
+            viewer.showAdminMenu();
+        }
+    }
+
 }

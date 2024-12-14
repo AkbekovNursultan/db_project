@@ -125,6 +125,85 @@ public class Viewer {
         mainPanel.repaint();
         showFrame();
     }
+    public void addUser(){
+        mainPanel.removeAll();
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setBounds(150, 50, 100, 30);
+        JTextField usernameField = new JTextField();
+        usernameField.setBounds(150, 80, 200, 30);
+
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setBounds(150, 120, 100, 30);
+        JTextField nameField = new JTextField();
+        nameField.setBounds(150, 150, 200, 30);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setBounds(150, 190, 100, 30);
+        JTextField passwordField = new JTextField();
+        passwordField.setBounds(150, 220, 200, 30);
+
+        JLabel typeLabel = new JLabel("Account type:");
+        typeLabel.setBounds(150, 250, 100, 30);
+        JTextField typeField = new JTextField();
+        typeField.setBounds(150, 280, 200, 30);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setBounds(150, 350, 200, 30);
+        submitButton.addActionListener(e -> {
+            // Retrieve the values from the input fields
+            String name = nameField.getText();
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            String accountType = typeField.getText();
+
+            // Call the Model's gradeStudent method
+            model.addUser(name, username, password, accountType);
+        });
+
+        mainPanel.add(nameLabel);
+        mainPanel.add(nameField);
+        mainPanel.add(usernameLabel);
+        mainPanel.add(usernameField);
+        mainPanel.add(passwordLabel);
+        mainPanel.add(passwordField);
+        mainPanel.add(typeLabel);
+        mainPanel.add(typeField);
+        mainPanel.add(submitButton);
+        mainPanel.add(goBack);
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        showFrame();
+    }
+    public void deleteUser(){
+        mainPanel.removeAll();
+
+        JLabel idLabel = new JLabel("Delete user\nID:");
+        idLabel.setBounds(150, 50, 100, 30);
+        JTextField idField = new JTextField();
+        idField.setBounds(150, 80, 200, 30);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setBounds(150, 150, 200, 30);
+        submitButton.addActionListener(e -> {
+            // Retrieve the values from the input fields
+            int id = Integer.parseInt(idField.getText());
+
+            // Call the Model's gradeStudent method
+            model.deleteUser(id);
+        });
+
+        mainPanel.add(idLabel);
+        mainPanel.add(idField);
+        mainPanel.add(submitButton);
+        mainPanel.add(goBack);
+
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        showFrame();
+    }
+
 
     public void showTeacherMenu() {
         mainPanel.removeAll();
