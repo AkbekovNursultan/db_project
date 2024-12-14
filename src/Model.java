@@ -147,14 +147,21 @@ public class Model {
 
     // Grade a student (only available to teachers)
     public void gradeStudent(int assignmentId, int studentId, int grade) {
-        String sql = "UPDATE students_assignments SET grade = ? WHERE assignment_id = ? AND student_id = ?";
+        String sql = "UPDATE students_assignments sa\n" +
+                "SET sa.grade = ?\n" +
+                "FROM assignments a\n" +
+                "WHERE sa.assignment_id = a.id\n" +
+                "  AND sa.student_id = ?\n" +
+                "  AND sa.assignment_id = ?\n" +
+                "  AND a.teacher_id = ?;  -- Teacher ID must match the one who created the assignment\n";
 
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, grade);
-            pstmt.setInt(2, assignmentId);
-            pstmt.setInt(3, studentId);
+            pstmt.setInt(3, assignmentId);
+            pstmt.setInt(2, studentId);
+            pstmt.setInt(4, userId);
 
             int rowsUpdated = pstmt.executeUpdate();
             String msg;
@@ -167,7 +174,7 @@ public class Model {
             }
             viewer.showTeacherMenu();
         } catch (SQLException e) {
-            String errorMessage = ("Failed to update grade: " + e.getMessage());
+            String errorMessage = ("Failed to update grade: " + "submission is not found.");
             JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
             viewer.showTeacherMenu();
         }
@@ -205,7 +212,7 @@ public class Model {
     // Show submissions for a specific assignment (for teachers)
     public void showSubmissions() {
         String sql = """
-            SELECT sa.student_id, sa.submission, sa.grade
+            SELECT sa.student_id, sa.submission,a.id, sa.grade
             FROM students_assignments sa
             JOIN assignments a ON sa.assignment_id = a.id
             WHERE a.teacher_id = ? AND sa.submission IS NOT NULL           
@@ -218,7 +225,8 @@ public class Model {
             try (ResultSet rs = pstmt.executeQuery()) {
                 StringBuilder output = new StringBuilder("Submissions:\n");
                 while (rs.next()) {
-                    output.append("Student ID: ").append(rs.getInt("student_id"))
+                    output.append("\nTask ID: ").append(rs.getInt("id"))
+                            .append("\nStudent ID: ").append(rs.getInt("student_id"))
                             .append("\nSubmission: ").append(rs.getString("submission"))
                             .append("\nGrade: ").append(rs.getInt("grade"))
                             .append("\n-------------\n");
@@ -528,3 +536,4 @@ public class Model {
     }
 
 }
+
