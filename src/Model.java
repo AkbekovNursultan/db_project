@@ -147,14 +147,14 @@ public class Model {
 
     // Grade a student (only available to teachers)
     public void gradeStudent(int assignmentId, int studentId, int grade) {
-        String sql = "UPDATE students_assignments sa\n" +
-                "SET sa.grade = ?\n" +
-                "FROM assignments a\n" +
-                "WHERE sa.assignment_id = a.id\n" +
-                "  AND sa.student_id = ?\n" +
-                "  AND sa.assignment_id = ?\n" +
-                "  AND a.teacher_id = ?;  -- Teacher ID must match the one who created the assignment\n";
-
+        String sql = "UPDATE students_assignments as sa\n" +
+                        "                SET grade = ?" +
+                        "                FROM assignments a" +
+                        "                WHERE sa.assignment_id = a.id" +
+                        "                  AND sa.student_id = ?" +
+                        "                  AND sa.assignment_id = ?" +
+                        "                  AND a.teacher_id = ?;";
+        
         try (Connection conn = MyJDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
