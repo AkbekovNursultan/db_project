@@ -167,7 +167,7 @@ public class Model {
             String msg;
             if (rowsUpdated > 0) {
                 msg = ("Grade updated successfully.");
-                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, msg, "Done", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 msg =("No matching submission found to update.");
                 JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -393,7 +393,7 @@ public class Model {
                             String msg;
                             if (rowsUpdated > 0) {
                                 msg = ("Submission updated.");
-                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, msg, "Done", JOptionPane.INFORMATION_MESSAGE);
                             } else {
                                 msg = ("No matching task was found to update.");
                                 JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -409,7 +409,7 @@ public class Model {
                             String msg;
                             if (rowsInserted > 0) {
                                 msg = ("Submission added.");
-                                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, msg, "Done", JOptionPane.INFORMATION_MESSAGE);
                             } else {
                                 msg = ("Failed to add submission.");
                                 JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -441,7 +441,7 @@ public class Model {
 
             pstmt.executeUpdate();
             String msg = ("User is successfully updated.");
-            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, msg, "Done", JOptionPane.INFORMATION_MESSAGE);
             viewer.showAdminMenu();
         } catch (SQLException e) {
             viewer.showAdminMenu();
@@ -455,7 +455,7 @@ public class Model {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
             String msg = ("User is successfully deleted.");
-            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, msg, "Done", JOptionPane.INFORMATION_MESSAGE);
             viewer.showAdminMenu();
         } catch (SQLException e) {
             viewer.showAdminMenu();
